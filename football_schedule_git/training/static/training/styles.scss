@@ -1,0 +1,129 @@
+$theme-color: #116466 !important;
+$text-color: white !important;
+$standout-color: #1f2623 !important;
+$b-color: #2c3531 !important;
+
+a{
+    color: $standout-color;
+    border-style: solid;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-color: $theme-color; //Hides border under
+}
+
+a:hover{
+    color: $b-color;
+    border-color: $b-color;
+}
+
+body{
+    padding: 20px;
+    background-color: $theme-color;
+    color: $text-color;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+.form-control{
+    background-color: $theme-color;
+    color: $text-color;
+    border-color: $b-color;
+}
+.form-control::placeholder{
+    color: $b-color;
+    font-size: 15px;
+}
+.form-control:focus{
+    box-shadow: 3px 3px 0px 0px $b-color;
+}
+
+.btn{
+    background-color: $b-color;
+    border-color: $b-color;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.content{
+    padding-left: 15px;
+}
+
+#button_group {
+    padding-bottom: 10px;
+    font-size: 20px;
+}
+
+#drill_name {
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+#single_drill {
+    border-style: solid;
+    border-radius: 10px;
+    border-color: $b-color;
+    border-width: 1px;
+    transition: 0.5s;
+    margin-bottom: 5px;
+}
+
+#single_drill:hover {
+    background-color: rgba(255, 255, 255, 0.194);
+}
+
+.drill_title{
+    color: $standout-color;
+    font-weight: 600;
+}
+
+.table, .month{
+    text-align: center;
+    border-style: solid;
+    border-width: 1px;
+    border-color: $standout-color;
+    font-size: 22px;
+    background-color: $theme-color;
+}
+
+.mon, .tue, .wed, .thu, .fri, .sat, .sun, .noday{
+    padding: 50px 50px;
+    background-color: $theme-color;
+}
+
+.mon{
+    background-color: red;
+}
+
+.training{
+    border-radius: 5px;
+    background-color: rgba(0, 255, 55, 0.134);
+    a{
+        border: none;
+        color: $text-color;
+    }
+}
+
+.match{
+    border-radius: 5px;
+    background-color: rgba(0, 13, 255, 0.134);
+    a{
+        border: none;
+        color: $text-color;
+    }
+
+}
+
+.recovery{
+    border-radius: 5px;
+    background-color: rgba(0, 251, 255, 0.134);
+    a{
+        border: none;
+        color: $text-color;
+    }
+
+}
+
+.hideScroll::-webkit-scrollbar{
+    display: none;
+}

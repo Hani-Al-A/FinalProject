@@ -1,0 +1,33 @@
+{% extends "training/layout.html" %}
+{% load static %}
+{% block body %}
+
+    <button id="view_calendar" class="btn btn-primary" style="display: none;">View calendar</button>
+    <button id="create_event" class="btn btn-primary">Create new event</button>
+    
+
+    <center>
+        <div class="cal">
+            {{ cal|safe }}
+            <div class="d-flex justify-content-end">
+                <a id="previous_month" class="btn btn-primary " style="color: white !important;">Previous Month</a>
+                <a id="next_month" class="btn btn-primary" style="color: white !important;">Next Month</a>
+            </div>
+        </div>
+        
+    </center>
+    
+    <div id="create_event_form" style="display: none;">
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button class="btn btn-primary" type="submit">Add Event</button>
+        </form>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'training/schedule.js' %}"></script>
+{% endblock %}

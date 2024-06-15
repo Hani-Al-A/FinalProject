@@ -1,0 +1,43 @@
+{% extends "training/layout.html" %}
+{% load static %}
+{% block body %}
+    <h1>Select Competition and Team</h1>
+    {% if competitions %}
+    <form>
+        <label for="competition">Competition:</label>
+        
+        <select class="form-control" id="competition">
+            <option value="">Select a competition</option>
+            {% for competition in competitions %}
+                <option value="{{ competition.id }},{{ competition.name }}">{{ competition.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="button" id="fetchTeamsBtn">Fetch Teams</button>
+    </form>
+    {% endif %}
+    {% if competition_name %}
+    <label for="competition">Competition:</label>
+        
+    <select class="form-control" id="competition_name" disabled>
+        <option>{{ competition_name }}</option>
+    </select>
+    {% endif %}
+
+
+    <label for="team">Team:</label>
+    <select class="form-control" id="team">
+        <option value="">Select a team</option>
+        {% for team in teams %}
+            <option value="{{ team.id }}">{{ team.name }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn btn-primary" type="button" id="back_to_comp_select">Back to competition select</button>
+
+    
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'training/test.js' %}">
+        
+    </script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "training/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+    <h3>Register</h3>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <select class="form-select form-control" id="job_title" name="is_coach" aria-label="Default select example">
+                <option value="none" selected>Select your job</option>
+                <option value="False">Player</option>
+                <option value="True">Coach</option>
+            </select>
+            <label for="competition">Competition:</label>
+        
+            <select class="form-control" id="competition_name" disabled>
+                <option>{{ competition_name }}</option>
+            </select>
+            
+        </div>
+        <div class="register_details" style="display: none;">
+            <div class="mb-3">
+                <input class="form-control" type="text" name="first_name" placeholder="First Name">
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="text" name="last_name" placeholder="Last Name">
+            </div>
+            <div class="mb-3 coach_field" style="display: none;">
+                <input class="form-control" type="text" name="clubC" placeholder="Club you currently coach">
+            </div>
+            <div class="mb-3 player_field" style="display: none;">
+                <input class="form-control" type="text" name="clubP" placeholder="Club you currently play for">
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="text" name="username" placeholder="Username">
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="email" name="email" placeholder="Email Address">
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="password" name="password" placeholder="Password">
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
+            </div>
+            
+            <input class="btn btn-primary" type="submit" value="Register">
+        </div>
+    </form>
+    <p></p>
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'training/register.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "training/layout.html" %}
+{% load static %}
+{% block body %}
+    <h2>Events on {{ month_name }} {{ day }}, {{ year }}</h2>
+    {% if events %}
+    {% for event in events %}
+        <div class="p-2" id="single_drill">
+            <h4 class="drill_title">{{ event.event_type }}</h4>
+            <h6>{{ event.title }}</h6>
+            {% if event.drills %}
+                Drills:
+                <ul>
+                    {% for drill in event.drills.all %}
+                        <li>
+                            <a href="{% url 'drill_view' drill.id %}">{{drill}}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            <p class="timing">Start time: {{ event.start_time }}</p>
+            <p class="timing">End time: {{ event.end_time }}</p>
+            <p class="description">{{ event.description }}</p>
+        </div>
+    {% endfor %}
+    {% else %}
+        <h3>There are no events scheduled on this day</h3>
+    {% endif %}
+
+    
+{% endblock %}
