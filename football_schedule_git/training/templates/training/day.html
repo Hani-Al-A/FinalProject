@@ -1,31 +1,154 @@
 {% extends "training/layout.html" %}
 {% load static %}
+{% load tz %}
 {% block body %}
-    <h2>Events on {{ month_name }} {{ day }}, {{ year }}</h2>
+    {% if not matchday %}
+        <h2>Events on {{ month_name }} {{ day }}, {{ year }}</h2>
+    {% endif %}
+    <div class="d-flex justify-content-end">
+        <a class="nav-link" href="{% url 'schedule' month_num year %}">Back to schedule</a>
+    </div>
     {% if events %}
-    {% for event in events %}
-        <div class="p-2" id="single_drill">
+    {% for event, local_time in eventsWithLocalTimes %}
+        {% if event.event_type != "Match" %}
+        <div class="single_drill">
+        <hr>
+        <div class="p-2 event_{{ event.id }}" id="single_drill">
             <h4 class="drill_title">{{ event.event_type }}</h4>
             <h6>{{ event.title }}</h6>
-            {% if event.drills %}
-                Drills:
-                <ul>
-                    {% for drill in event.drills.all %}
-                        <li>
-                            <a href="{% url 'drill_view' drill.id %}">{{drill}}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            
-            <p class="timing">Start time: {{ event.start_time }}</p>
-            <p class="timing">End time: {{ event.end_time }}</p>
+
+            <!-- convert to my local date/time -->
+            {% timezone user_timezone %}
+            <p class="timing">Start time: {{ local_time }}</p> 
+            {% endtimezone %}
             <p class="description">{{ event.description }}</p>
+            <div class="d-flex justify-content-end">
+                <form data-day="{{ event.date_time.day }}" data-month="{{ event.date_time.month }}" data-year="{{ event.date_time.year }}" data-event-id="{{ event.id }}" onclick="return false">
+                    {% csrf_token %}
+                    <button class="btn btn-primary single_btn" id="delete_event" type="submit">Delete Event</button>
+                </form>
+            </div>
         </div>
+        </div>
+        {% else %}
+        <div class="vstack mx-auto d-flex justify-content-center">   
+            <div class="d-flex justify-content-center text-center p-2">
+                <div class="competition_container">
+                    <center>
+                    <div class="p-2 img responsive comp_emblem">
+                        <img class="img-fluid img-thumbnail responsive emblem" src="{{ event.competition_emblem }}">
+                    </div>
+                    </center>
+                    <div class="stage">
+                    {% if event.stage == "LAST_16" %}
+                        <p>Round of 16</p>
+                    {% elif event.stage == "LAST_32" %}
+                        <p>Round of 32</p>
+                    {% elif event.stage == "LAST_64" %}
+                        <p>Round of 64</p>
+                    {% elif event.stage == "QUARTER_FINALS" %}
+                        Quarter Finals
+                    {% elif event.stage == "SEMI_FINALS" %}
+                        Semi Finals
+                    {% elif event.stage == "FINAL" %}
+                        Final
+                    {% elif event.stage == "THIRD_PLACE" %}
+                        Third Place
+                    {% elif event.stage == "GROUP_STAGE" %}
+                        <p>Group stages</p>
+                    {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="hstack gap-3 d-flex justify-content-center p-2">
+                <div class="p-2">
+                    <div class="vstack gap-3">
+                        <div class="p-2">
+                            <div class="img">
+                            {% if event.home_team_crest %}
+                                {% if event.match_type == "Club" %}
+                                    <img class="img-fluid responsive crest" src="{{ event.home_team_crest }}">
+                                {% else %}
+                                    <img class="img-fluid responsive flag" src="{{ event.home_team_crest }}">
+                                {% endif %}
+                            {% else %}
+                                <img class="img-fluid crest_placeholder responsive crest" src="https://b.fssta.com/uploads/application/soccer/team-logos/Placeholder.png">
+                            {% endif %}
+                            </div>
+                        </div>
+                        <div class="p-2 d-flex justify-content-center">
+                            {% if event.home_team_name %}
+                                <p class="text-center team_name">{{ event.home_team_name }}</p>
+                            {% else %}
+                                <p class="text-center team_name background_color"> Placeholder </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="p-2 text-center">
+                    {% if event.status != "SCHEDULED" %}
+                        {% timezone user_timezone %}
+                            <h2 class="matchInfoHeader"> {{ local_time }} </h2>
+                        {% endtimezone %}
+                    {% else %}
+                        <h2 class="matchInfoHeader">Time undecided</h2>
+                    {% endif %}
+                    {% if event.status == "FINISHED" %}
+                        <h1 class="score">{{ event.home_team_goals }} - {{ event.away_team_goals }}</h1>
+                        <h4 class="matchInfoHeader">Full-time</h4>
+                    {% elif event.status == "IN_PLAY" %}
+                        <h1 class="score">{{ event.home_team_goals }} - {{ event.away_team_goals }}</h1>
+                        <h4 class="matchInfoHeader">In-play</h4>
+                    {% elif event.status == "PAUSED" %}
+                        <h1 class="score">{{ event.home_team_goals }} - {{ event.away_team_goals }}</h1>
+                        <h4 class="matchInfoHeader">Half-time</h4>
+                    {% elif event.status == "CANCELLED" %}
+                        <h1>Match Canceled</h1>
+                    {% elif event.status == "TIMED" or event.status == "SCHEDULED" %}
+                        <h4 class="matchInfoHeader">Yet to start</h4>
+                    {% endif %}
+                    <h4 class="matchInfoHeader">Matchday {{ event.match_matchday }}</h4>
+                </div>
+                <div class="p-2">
+                    <div class="vstack gap-3 text-center">
+                        <div class="p-2">
+                            <div class="img">
+                            {% if event.away_team_crest %}
+                                {% if event.match_type == "Club" %}
+                                    <img class="img-fluid responsive crest" src="{{ event.away_team_crest }}">
+                                {% else %}
+                                    <img class="img-fluid responsive flag" src="{{ event.away_team_crest }}">
+                                {% endif %}
+                            {% else %}
+                                <img class="img-fluid crest_placeholder responsive crest" src="https://b.fssta.com/uploads/application/soccer/team-logos/Placeholder.png">
+                            {% endif %}
+                            </div>
+                        </div>
+                        <div class="p-2 d-flex justify-content-center">
+                            {% if event.away_team_name %}
+                                <p class="text-center team_name">{{ event.away_team_name }}</p>
+                            {% else %}
+                                <p class="text-center team_name background_color"> Placeholder </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        {% endif %}
     {% endfor %}
     {% else %}
         <h3>There are no events scheduled on this day</h3>
     {% endif %}
 
     
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'training/day.js' %}"></script>
 {% endblock %}

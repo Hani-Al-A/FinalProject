@@ -7,36 +7,56 @@
     <h3>Register</h3>
 
     {% if message %}
-        <div>{{ message }}</div>
+    <div class="message_container">
+        <div class="message">
+            <h5>{{ message }}</h5>
+        </div>
+    </div>
     {% endif %}
 
-    <form action="{% url 'register' %}" method="post">
+
+    {% if teams %}
+    <div class="mb-3">
+    <form method="POST" id="competitionForm">
         {% csrf_token %}
+        <label for="competition">Competition:</label>
+        
+        <select class="form-control" id="competition_name" name="competition_id" onchange="this.form.submit()">
+            <option value="{{ selected_competition.id }}">{{ selected_competition.name }}</option>
+            {% for competition in competitions %}
+                {% if competition != selected_competition %} <!-- so that it does not repeat the selected option -->
+                    <option value="{{ competition.id }}">{{ competition.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </form>
+    </div>
+    <form action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="user_time_zone" id="user_time_zone">
         <div class="mb-3">
-            <select class="form-select form-control" id="job_title" name="is_coach" aria-label="Default select example">
+            <label for="team">Team:</label>
+            <select class="form-select form-control must_select" name="club" id="team">
+                <option value="">Select a team</option>
+                {% for team in teams %}
+                    <option value="{{ team.name }}, {{ team.id }}">{{ team.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <select class="form-select form-control must_select" id="job_title" name="is_coach" aria-label="Default select example">
                 <option value="none" selected>Select your job</option>
                 <option value="False">Player</option>
                 <option value="True">Coach</option>
             </select>
-            <label for="competition">Competition:</label>
-        
-            <select class="form-control" id="competition_name" disabled>
-                <option>{{ competition_name }}</option>
-            </select>
-            
         </div>
+
         <div class="register_details" style="display: none;">
             <div class="mb-3">
                 <input class="form-control" type="text" name="first_name" placeholder="First Name">
             </div>
             <div class="mb-3">
                 <input class="form-control" type="text" name="last_name" placeholder="Last Name">
-            </div>
-            <div class="mb-3 coach_field" style="display: none;">
-                <input class="form-control" type="text" name="clubC" placeholder="Club you currently coach">
-            </div>
-            <div class="mb-3 player_field" style="display: none;">
-                <input class="form-control" type="text" name="clubP" placeholder="Club you currently play for">
             </div>
             <div class="mb-3">
                 <input class="form-control" type="text" name="username" placeholder="Username">
@@ -50,10 +70,24 @@
             <div class="mb-3">
                 <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
             </div>
-            
-            <input class="btn btn-primary" type="submit" value="Register">
+            <input class="btn btn-primary single_btn" type="submit" value="Register">
         </div>
     </form>
+    {% else %}
+    <form method="POST" id="competitionForm">
+        {% csrf_token %}
+        <label for="competition">Competition:</label>
+        
+        <select class="form-control" id="competition_name" name="competition_id" onchange="this.form.submit()">
+            <option value="">Select a competition</option>
+            {% for competition in competitions %}
+            <option value="{{ competition.id }}">{{ competition.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% endif %}
+
     <p></p>
     Already have an account? <a href="{% url 'login' %}">Log In here.</a>
 

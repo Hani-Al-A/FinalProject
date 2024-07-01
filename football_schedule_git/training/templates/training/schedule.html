@@ -1,29 +1,82 @@
 {% extends "training/layout.html" %}
 {% load static %}
 {% block body %}
-
-    <button id="view_calendar" class="btn btn-primary" style="display: none;">View calendar</button>
-    <button id="create_event" class="btn btn-primary">Create new event</button>
+    {% if user.is_authenticated %}
+    {% if user.is_coach %}
+    <div class="d-flex justify-content-center" id="button_group">
+        <a id="view_calendar" class="changes_page" style="display: none;">View calendar</a>
+        <a id="create_event" class="changes_page">Create Event</a>
+    </div>
+    {% endif %}
+    <div class="d-flex justify-content-end">
+        {% if user.is_coach %}
+        <form method="post" action="{% url 'sync_calendar' user.club.club_api_id %}">
+            {% csrf_token %}
+            <input type="hidden" name="timezone" id="timezone">
+            <button id="sync_button" class="btn btn-primary single_btn" type="submit">Sync real calendar</button>
+        </form>
+        {% endif %}
+        <form method="post" action="{% url 'update_timezone' %}">
+            {% csrf_token %}
+            <input type="hidden" name="user_time_zone" id="user_time_zone">
+            <button class="btn btn-primary single_btn" type="submit">Update Timezone</button>
+        </form>
+    </div>
+    {% endif %}
     
 
     <center>
         <div class="cal">
             {{ cal|safe }}
-            <div class="d-flex justify-content-end">
-                <a id="previous_month" class="btn btn-primary " style="color: white !important;">Previous Month</a>
-                <a id="next_month" class="btn btn-primary" style="color: white !important;">Next Month</a>
+            <div>
+                <div class="d-flex justify-content-start">
+                    <a id="previous_month" class="btn btn-primary btn_group" style="color: white !important;">Previous Month</a>
+                    <a id="next_month" class="btn btn-primary btn_group" style="color: white !important;">Next Month</a>
+                </div>
             </div>
         </div>
-        
+
     </center>
-    
+    {% if user.is_authenticated %}
     <div id="create_event_form" style="display: none;">
-        <form method="post">
+        <form method="post" action="{% url 'add_event' %}">
             {% csrf_token %}
-            {{ form }}
-            <button class="btn btn-primary" type="submit">Add Event</button>
+            <div class="mb-3">
+                {% if drills_of_coach %}
+                <label for="drills">Drills for session:</label>
+                <select class="form-select form-control hideScroll" name="drills" id="drills" multiple aria-placeholder="Drills">
+                    {% for drill in drills_of_coach %}
+                        <option value="{{ drill.id }}">{{ drill.name }}</option>
+                    {% endfor %}
+                </select>
+                {% else %}
+                <label for="drills">Drills for session:</label>
+                <select class="form-select form-control hideScroll" name="drills" id="drills" disabled>
+                    <option value="">No drills to select from</option>
+                </select>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <input type="text" name="title" class="form-control" placeholder="Title">
+            </div>
+            <div class="mb-3">
+                <select class="form-select form-control" name="event_type" id="event" aria-placeholder="Event Type">
+                    <option value="Training">Training</option>
+                    <option value="Recovery">Recovery</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <input type="datetime-local" class="form-control" name="date_time">
+            </div>
+            <div class="mb-3">
+                <textarea cols="2" name="description" class="form-control" placeholder="Description"></textarea>
+            </div>
+            <button class="btn btn-primary single_btn" type="submit">Add Event</button>
         </form>
     </div>
+    {% endif %}
+
+    
 
 
 {% endblock %}

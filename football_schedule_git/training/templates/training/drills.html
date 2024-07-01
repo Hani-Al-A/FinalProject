@@ -2,37 +2,47 @@
 {% load static %}
 {% block body %}
     {% if message %}
-        {{ message }}
+    <div class="message_container">
+        <div class="message">
+            <h5>{{ message }}</h5>
+        </div>
+    </div>
     {% endif %}
     {% if user.is_coach %}
         <div class="d-flex justify-content-center" id="button_group">
-            <a id="show_drills" style="display: none;">Drills</a>
-            <a id="create_drill">Create new drill</a>
+            <a id="show_drills" class="changes_page" style="display: none;">Drills</a>
+            <a id="create_drill" class="changes_page">Create new drill</a>
         </div>
         <div class="create_drill_form" style="display: none;">
             <form action="{% url 'create_drill' %}" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="timezone" id="timezone">
                 <div class="mb-3">
-                    <input class="form-control" type="text" name="drill_name" placeholder="Drill Name">
+                    <input class="form-control" type="text" id="transparent" name="drill_name" placeholder="Drill Name">
                 </div>
                 <div class="mb-3">
-                    <textarea rows="3" class="form-control" type="text" name="description" placeholder="Description"></textarea>
+                    <textarea rows="3" class="form-control" id="transparent" type="text" name="description" placeholder="Description"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="drill_video">Youtube Embed URL</label>
-                    <input class="form-control" type="url" name="drill_video" placeholder="https://www.youtube.com/embed/video_id">
+                    <input class="form-control" type="url" id="transparent" name="drill_video" placeholder="https://www.youtube.com/embed/video_id">
                 </div>
-                <button type="submit" class="btn btn-primary">Create Drill</button>
-                <button id="cancel" class="btn btn-primary">Cancel</button>
+                <button type="submit" class="btn btn-primary btn_group">Create Drill</button>
+                <button id="cancel" type="button" class="btn btn-primary btn_group">Cancel</button>
             </form>
         </div>
+        
         <div class="vstack gap-3" id="drills_list">
-            {% for drill in drills %}
-                <div class="p-2" id="single_drill">
-                    <a id="drill_name" href="{% url 'drill_view' drill.id %}">{{ drill.name }}</a>
-                    <p>{{ drill.description }}</p>  
-                </div>
-            {% endfor %}
+            {% if drills %}
+                {% for drill in drills %}
+                    <div class="p-2" id="single_drill">
+                        <a id="drill_name" href="{% url 'drill_view' drill.id %}">{{ drill.name }}</a>
+                        <p>{{ drill.description }}</p>  
+                    </div>
+                {% endfor %}
+            {% else %}
+            <h3>You have not created any drills yet.</h3>
+            {% endif %}
         </div>
     {% else %}
         <h6>You are not a coach to be using this page</h6>

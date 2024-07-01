@@ -1,0 +1,13 @@
+{% extends "training/layout.html" %}
+{% load static %}
+{% load tz %}
+{% block body %}
+
+    <h3>Test</h3>
+
+    {{is_naive}}
+    <p>{{ error }}</p>
+    <p>{{ date_time }}</p>
+
+    
+{% endblock %}

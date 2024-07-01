@@ -43,12 +43,19 @@ EMAIL_HOST_PASSWORD = 'tesz ugom uaaa qaod'
 
 INSTALLED_APPS = [
     'training',
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+
+CRONJOBS = [
+    #repeats every day at 7am
+    ('* * * * *', 'training.views.reminder_of_event'),
+    # Add more cron jobs as needed
 ]
 
 MIDDLEWARE = [

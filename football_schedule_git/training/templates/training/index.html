@@ -1,8 +1,39 @@
 {% extends "training/layout.html" %}
 {% load static %}
 {% block body %}
-
     <h3>Home</h3>
+    <br>
+    {% if user.is_authenticated %}
+        {% if next_week_calendar != "" %}
+            <h5>This weeks schedule:</h5>
+            <div class="cal">
+                <table border="0" cellpadding="0" cellspacing="0" class="month table table-bordered this_week">
+                    {{ week_calendar|safe }}
+                </table>
+            </div>
+            <h5>Next weeks schedule:</h5>
+            <div class="cal">
+                <table border="0" cellpadding="0" cellspacing="0" class="month table table-bordered">
+                    {{ next_week_calendar|safe }}
+                </table>
+            </div>
+        {% else %}
+            <h5>This week & next weeks schedule:</h5>
+            <div class="cal">
+                <table border="0" cellpadding="0" cellspacing="0" class="month table table-bordered this_week">
+                    {{ week_calendar|safe }}
+                </table>
+            </div>
+        {% endif %}
+    {% else %}
+        <center>
+            <h4>Make sure you login to have full access of all features!</h4>
+        </center>
+    {% endif %}
 
-    
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'training/index.js' %}"></script>
 {% endblock %}

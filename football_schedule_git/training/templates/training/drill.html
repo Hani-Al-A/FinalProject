@@ -1,7 +1,11 @@
 {% extends "training/layout.html" %}
 {% block body %}
     {% if message %}
-        <h6>{{ message }}</h6>
+    <div class="message_container">
+        <div class="message">
+            <h5>{{ message }}</h5>
+        </div>
+    </div>
     {% endif %}
     {% if drill %}
         <h1 class="drill_title">{{ drill.name }}</h1>
@@ -15,6 +19,6 @@
         {% endif %}
     {% endif %}
     <form action="{% url 'drill_library' %}">
-        <button type="submit" class="btn btn-primary">Back to drill library</button>
+        <button type="submit" class="btn btn-primary single_btn">Back to drill library</button>
     </form>
 {% endblock %}
